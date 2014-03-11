@@ -24,10 +24,56 @@
     <!----- DO NOT EDIT ABOVE THIS LINE ------>
     
     <template id="dismissable-template">
+      <style>
+        :host {
+          border: 1px solid #EAEAEA;
+        }
+        #close {
+          display: block;
+          background: #EAEAEA;
+          color: red;
+          padding: 0.5em;
+          cursor: pointer;
+          text-align: right;
+        }
+        #wrapper {
+          padding: 0.5em;
+        }
+      </style>
       <!-- Fill in your Shadow DOM template here -->
+      <div class="dismissable-tmpl">
+        <a id="close">STFU</a>
+        <div id="wrapper">
+          <content></content>
+        </div>
+      </div>
     </template>
     <script>
       // Write your solution in here. Good luck!
+      var dismissables = document.getElementsByClassName("dismissable"),
+          template = document.getElementById("dismissable-template");
+
+      for(var i=0; i<dismissables.length; i++) {
+        var dismissable = dismissables[i],
+            shadow = dismissable.createShadowRoot();
+
+        // Inject template into dismissable
+        shadow.appendChild(
+          document.importNode(template.content, true)
+        );
+
+        shadow.getElementById("close").addEventListener(
+          "click", 
+          (function(dismissable) {
+          
+            return function(e) {
+              e.preventDefault();
+              dismissable.style.display = "none";
+            };
+
+          })(dismissable)
+        );
+      }
     </script>
   </body>
 </html>
