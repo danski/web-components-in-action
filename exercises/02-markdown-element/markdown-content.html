@@ -1,1 +1,39 @@
-<!-- Nothing here, yet! Do your work! -->
+<polymer-element name="markdown-content" attributes="src">
+  <template>
+    <div id="content">
+      {{indentedTextContent}}
+    </div>
+  </template>
+
+  <script type="text/javascript" src="/bower_components/marked/lib/marked.js"></script>
+  <script type="text/javascript">
+    Polymer('markdown-content', {
+      // lifecycle functions
+      render: function() {
+        var raw = this.textContent,
+            // man who use regex to solve problem 
+            // now has two problems
+            filtered = raw.replace(/^(\s|\t)+/gm, ''), 
+            md = marked(filtered);
+
+        this.$.content.innerHTML = md;
+      },
+      attached: function() {
+        // set up mutation observer
+        var el = this;
+        this.observer = new MutationObserver(function() {
+          el.render();
+        }).observe(this, {childList: true, characterData: true, subtree: true});
+      },
+      detached: function() {
+        // stop mutation observer
+      },
+      ready: function() {
+        this.render();
+      },
+      srcChanged: function() {
+
+      }
+    });
+  </script>
+</polymer-element>
